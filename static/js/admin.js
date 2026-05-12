@@ -320,6 +320,42 @@ function closeSidebar() {
 
     overlay.classList.remove("overlay-show");
 }
+
+/* =====================================
+   DELETE MODAL
+===================================== */
+
+let deleteForm = null;
+
+function openDeleteModal(form) {
+
+    deleteForm = form;
+
+    document
+        .getElementById("delete-modal")
+        .classList.add("show");
+}
+
+function closeDeleteModal() {
+
+    deleteForm = null;
+
+    document
+        .getElementById("delete-modal")
+        .classList.remove("show");
+}
+
+
+/* CONFIRM DELETE */
+document
+    .getElementById("confirm-delete-btn")
+    .addEventListener("click", function () {
+
+        if (deleteForm) {
+
+            deleteForm.submit();
+        }
+    });
 /* =========================================================
    End
 ========================================================= */

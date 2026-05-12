@@ -81,7 +81,7 @@
         </div>
         <div class="product-actions">
           <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-secondary">Edit</a>
-          <form method="POST" action="{{ url_for('delete_product', product_id=product.id) }}" onsubmit="return confirm('Delete this product?')">
+          <form method="POST" action="{{ url_for('delete_product', product_id=product.id) }} " onclick="event.preventDefault(); openDeleteModal(this.closest('form'))">
             <button type="submit" class="btn btn-danger">Delete</button>
           </form>
         </div>
@@ -139,6 +139,41 @@
     </form>
   </div>
 </div>
+<!-- DELETE CONFIRM MODAL -->
+<div class="delete-modal-overlay" id="delete-modal">
 
+  <div class="delete-modal">
+
+    <div class="delete-icon">
+      🗑️
+    </div>
+
+    <h2>Delete Product?</h2>
+
+    <p>
+      This action cannot be undone.
+    </p>
+
+    <div class="delete-actions">
+
+      <button
+        class="delete-cancel-btn"
+        onclick="closeDeleteModal()"
+      >
+        Cancel
+      </button>
+
+      <button
+        class="delete-confirm-btn"
+        id="confirm-delete-btn"
+      >
+        Delete
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
 <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 {% endblock %}
