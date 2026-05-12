@@ -4,6 +4,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from functools import wraps
 import os
+import cloudinary
+from cloudinary.uploader import upload
 
 
 app = Flask(__name__)
@@ -15,8 +17,16 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     "DATABASE_URL",
     "sqlite:///affiliate.db"
 )
+cloudinary.config(
+
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    secure=True
+)
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
+# app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB max
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp', 'gif'}
 
@@ -105,24 +115,13 @@ def add_product():
 
     image_path = ''
     if 'image' in request.files:
-        file = request.files['image']
-        if file and file.filename and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            # make unique
-            import time
-            base, ext = os.path.splitext(filename)
-            # filename = f"{base}_{int(time.time())}{ext}"
-            # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            # image_path = f"uploads/{filename}"
-            filename = secure_filename(file.filename)
-            upload_folder = app.config['UPLOAD_FOLDER']
+     file = request.files['image']
 
-            # Create folder if missing
-            os.makedirs(upload_folder, exist_ok=True)
+    if file and file.filename and allowed_file(file.filename):
 
-            filepath = os.path.join(upload_folder, filename)
+        upload_result = upload(file)
 
-            file.save(filepath)
+        image_path = upload_result['secure_url']
 
     max_order = db.session.query(db.func.max(Product.order)).scalar() or 0
     product = Product(name=name, description=description, image=image_path, order=max_order + 1)
@@ -151,14 +150,13 @@ def edit_product(product_id):
         product.description = request.form.get('description', '').strip()
 
         if 'image' in request.files:
-            file = request.files['image']
-            if file and file.filename and allowed_file(file.filename):
-                import time
-                filename = secure_filename(file.filename)
-                base, ext = os.path.splitext(filename)
-                filename = f"{base}_{int(time.time())}{ext}"
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                product.image = f"uploads/{filename}"
+          file = request.files['image']
+
+          if file and file.filename and allowed_file(file.filename):
+
+             upload_result = upload(file)
+
+             product.image = upload_result['secure_url']
 
         # Clear and re-add links
         Link.query.filter_by(product_id=product.id).delete()

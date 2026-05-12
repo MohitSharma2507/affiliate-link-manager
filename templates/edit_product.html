@@ -65,7 +65,7 @@
           <label>Product Image</label>
           {% if product.image %}
           <div class="current-image">
-            <img src="{{ url_for('static', filename=product.image) }}" alt="current" />
+            <img src="{{ product.image }}" alt="current" />
             <span>Current image — upload new to replace</span>
           </div>
           {% endif %}
