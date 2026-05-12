@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 from functools import wraps
 import os
 
+
 app = Flask(__name__)
 app.secret_key = app.secret_key = os.environ.get(
     "SECRET_KEY",
@@ -15,7 +16,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
     "sqlite:///affiliate.db"
 )
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB max
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp', 'gif'}
 
@@ -110,9 +111,18 @@ def add_product():
             # make unique
             import time
             base, ext = os.path.splitext(filename)
-            filename = f"{base}_{int(time.time())}{ext}"
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            image_path = f"uploads/{filename}"
+            # filename = f"{base}_{int(time.time())}{ext}"
+            # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            # image_path = f"uploads/{filename}"
+            filename = secure_filename(file.filename)
+            upload_folder = app.config['UPLOAD_FOLDER']
+
+            # Create folder if missing
+            os.makedirs(upload_folder, exist_ok=True)
+
+            filepath = os.path.join(upload_folder, filename)
+
+            file.save(filepath)
 
     max_order = db.session.query(db.func.max(Product.order)).scalar() or 0
     product = Product(name=name, description=description, image=image_path, order=max_order + 1)
