@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Admin Login{% endblock %}
+{% block body %}
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">
+      <!-- <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <rect width="36" height="36" rx="10" fill="#1a1a1a"/>
+        <path d="M10 26L18 10L26 26" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M13 21h10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+      </svg> -->
+    </div>
+    <h1>Admin Login</h1>
+    <p class="login-sub">Log in to manage your affiliate products</p>
+    {% if error %}
+    <div class="alert alert-error">{{ error }}</div>
+    {% endif %}
+    <form method="POST" action="{{ url_for('login') }}">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter username" autocomplete="username" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter password" autocomplete="current-password" required />
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Log In →</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

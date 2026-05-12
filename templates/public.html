@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Shop My Picks 🛍️{% endblock %}
+{% block body %}
+<div class="public-wrap">
+
+  <header class="public-header">
+    <div class="header-inner">
+      <div class="profile-area">
+        <div class="avatar">
+          <!-- <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <rect width="36" height="36" rx="10" fill="#1a1a1a"/>
+            <path d="M10 26L18 10L26 26" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13 21h10" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          </svg> -->
+        </div>
+        <div>
+          <h1 class="store-name">Octakid</h1>
+          <h2>Gaming | Tech | Gadgets</h2>
+          <!-- <p class="store-tagline">Curated products just for you ✨</p> -->
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="public-container">
+    {% if products %}
+    <div class="public-grid">
+      {% for product in products %}
+      <div class="pub-card">
+        <div class="pub-card-img">
+          {% if product.image %}
+            <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" loading="lazy" />
+          {% else %}
+            <div class="pub-img-placeholder">
+              <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            </div>
+          {% endif %}
+        </div>
+        <div class="pub-card-body">
+          <h2 class="pub-product-name">{{ product.name }}</h2>
+          {% if product.description %}
+          <p class="pub-product-desc">
+  {{ product.description }}
+</p>
+
+{% if product.description and product.description|length > 100 %}
+<button
+  class="see-more-btn"
+  data-title="{{ product.name }}"
+  data-description="{{ product.description }}"
+  data-image="{{ url_for('static', filename=product.image) if product.image else '' }}"
+  onclick="handleSeeMore(this)"
+>
+  See More
+</button>
+{% endif %}
+          {% endif %}
+          <div class="pub-links">
+            {% for link in product.links %}
+            <a href="{{ link.url }}" target="_blank" rel="noopener" class="pub-link-btn">
+              <span>{{ link.label }}</span>
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="pub-empty">
+      <p>No products yet — check back soon! 🔜</p>
+    </div>
+    {% endif %}
+  </div>
+
+ <footer class="pub-footer">
+
+  <div class="footer-content">
+
+   <p class="footer-main">
+      I only share products I genuinely like and recommend 💜
+   </p>
+   <br>
+    <p class="footer-copy">
+      © 2026 Octakid • All Rights Reserved
+    </p>
+    <a
+  href="https://instagram.com/octakid.exe"
+  target="_blank"
+  class="footer-social"
+>
+  Follow on Instagram ↗
+</a>
+
+  </div>
+
+
+</footer>
+</div>
+<!-- Product Preview Modal -->
+<div class="product-modal-overlay" id="product-modal-overlay">
+
+  <div class="product-modal">
+
+    <button
+      class="product-modal-close"
+      onclick="closeProductModal()"
+    >
+      ✕
+    </button>
+
+    <img
+      id="modal-image"
+      class="product-modal-image"
+      src=""
+      alt=""
+    >
+
+    <h2 id="modal-title"></h2>
+
+    <p id="modal-description"></p>
+
+  </div>
+
+</div>
+<script src="{{ url_for('static', filename='js/public.js') }}"></script>
+{% endblock %}
