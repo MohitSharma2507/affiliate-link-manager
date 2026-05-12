@@ -6,8 +6,14 @@ from functools import wraps
 import os
 
 app = Flask(__name__)
-app.secret_key = 'change-this-secret-key-in-production'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///affiliate.db'
+app.secret_key = app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "dev-secret-key"
+)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+    "DATABASE_URL",
+    "sqlite:///affiliate.db"
+)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB max
