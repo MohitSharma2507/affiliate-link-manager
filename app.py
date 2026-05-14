@@ -13,10 +13,13 @@ app.secret_key = os.environ.get(
     "SECRET_KEY",
     "dev-secret-key"
 )
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    "DATABASE_URL",
-    "sqlite:///affiliate.db"
-)
+database_url = os.environ.get("DATABASE_URL")
+
+if database_url and database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+
 cloudinary.config(
 
     cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
@@ -199,13 +202,20 @@ def public_page():
 def init_db():
     with app.app_context():
         db.create_all()
+
+        admin_username = os.getenv("ADMIN_USERNAME")
+        admin_password = os.getenv("ADMIN_PASSWORD"
+                                   )
         if not Admin.query.first():
-            admin = Admin(username='octakid')
-            admin.set_password('octakid@2610')
+            admin = Admin(username=admin_username)
+            admin.set_password(admin_password)
+
             db.session.add(admin)
             db.session.commit()
             print("Default admin created: username=admin, password=admin123")
 
-if __name__ == '__main__':
-    init_db()
-    app.run(host="0.0.0.0", port=5000, debug=True)
+# if __name__ == '__main__':
+#     init_db()
+#     app.run(host="0.0.0.0", port=5000, debug=True)
+db = SQLAlchemy(app)
+init_db()
