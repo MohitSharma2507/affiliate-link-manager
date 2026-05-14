@@ -1,5 +1,4 @@
 # Delete the old file and create a fresh one
-cat > requirements.txt << 'EOF'
 blinker==1.9.0
 click==8.3.3
 colorama==0.4.6
@@ -15,4 +14,3 @@ Werkzeug==3.1.8
 gunicorn==26.0.0
 psycopg2-binary==2.9.12
 cloudinary==1.44.2
-EOF
