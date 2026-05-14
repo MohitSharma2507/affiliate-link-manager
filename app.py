@@ -9,7 +9,7 @@ from cloudinary.uploader import upload
 
 
 app = Flask(__name__)
-app.secret_key = app.secret_key = os.environ.get(
+app.secret_key = os.environ.get(
     "SECRET_KEY",
     "dev-secret-key"
 )
@@ -209,5 +209,3 @@ def init_db():
 if __name__ == '__main__':
     init_db()
     app.run(host="0.0.0.0", port=5000, debug=True)
-
-    
